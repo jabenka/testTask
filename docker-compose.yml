@@ -6,20 +6,31 @@ networks:
 volumes:
   postgres_data:
 services:
+  bank_rest:
+    build: .
+    ports:
+      - "8081:8081"
+    networks:
+    - banking-net
+    depends_on:
+      - postgres
+
+
   postgres:
     image: postgres:13
     environment:
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
-      POSTGRES_DB: ${DB_NAME:-bankingBase}
+      POSTGRES_DB: ${DB_NAME:-bankcards}
     ports:
       - "5438:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    user: "postgres"
     networks:
       - banking-net
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_NAME:-bankingBase}" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_NAME:-bankcards}" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -29,7 +40,7 @@ services:
 
 #Что нужно сделать:
  # - Настроить сервисы для:
-     # - PostgreSQL (или MySQL) с начальной базой.
-    #  - Приложения Spring Boot (если нужно).
-  #- Открыть нужные порты (например, 5432, 8080).
- # - Настроить volume для хранения данных БД.
+     # - PostgreSQL (или MySQL) с начальной базой. +
+    #  - Приложения Spring Boot (если нужно). +
+  #- Открыть нужные порты (например, 5432, 8080). in dockerfile
+ # - Настроить volume для хранения данных БД. +

@@ -1,22 +1,19 @@
-# Здесь будет OpenAPI описание всех доступных эндпоинтов и моделей данных.
 openapi: 3.0.1
 info:
-  title: Bank Cards API
   description: API Documentation for Bank Cards
-  version: '1.0'
+  title: Bank Cards API
+  version: "1.0"
 servers:
-  - url: http://localhost:8081
-    description: Generated server url
+- description: Generated server url
+  url: http://localhost:8081
 security:
-  - bearerAuth: []
+- bearerAuth: []
 tags:
-  - name: User Controller
-    description: Operations related to users
+- description: Operations related to users
+  name: User Controller
 paths:
   /user/cards/transfer:
     post:
-      tags:
-        - User Controller
       operationId: transfer
       requestBody:
         content:
@@ -25,53 +22,63 @@ paths:
               $ref: '#/components/schemas/TransferRequest'
         required: true
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - User Controller
+      x-content-type: application/json
+      x-accepts:
+      - '*/*'
   /user/cards/block:
     post:
-      tags:
-        - User Controller
       operationId: blockCard
       parameters:
-        - name: last_four_card_digits
-          in: query
-          required: true
-          schema:
-            type: string
+      - explode: true
+        in: query
+        name: last_four_card_digits
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - User Controller
+      x-accepts:
+      - '*/*'
   /auth/refresh:
     post:
-      tags:
-        - auth-controller
       operationId: refresh
       parameters:
-        - name: refreshToken
-          in: query
-          required: true
-          schema:
-            type: string
+      - explode: true
+        in: query
+        name: refreshToken
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - auth-controller
+      x-accepts:
+      - '*/*'
   /auth/login:
     post:
-      tags:
-        - auth-controller
-      summary: Authenticate user
       description: Authenticates user credentials and returns JWT token
       operationId: login
       requestBody:
@@ -81,34 +88,38 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
         required: true
       responses:
-        '200':
-          description: Authentication successful
+        "200":
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/LoginResponse'
-        '400':
+          description: Authentication successful
+        "400":
+          content:
+            '*/*':
+              schema:
+                type: object
           description: Invalid request format or missing fields
+        "401":
           content:
             '*/*':
               schema:
                 type: object
-        '401':
           description: Invalid credentials
+        "500":
           content:
             '*/*':
               schema:
                 type: object
-        '500':
           description: Internal server error
-          content:
-            '*/*':
-              schema:
-                type: object
+      summary: Authenticate user
+      tags:
+      - auth-controller
+      x-content-type: application/json
+      x-accepts:
+      - '*/*'
   /admin/users/add:
     post:
-      tags:
-        - admin-controller
       operationId: register
       requestBody:
         content:
@@ -117,16 +128,19 @@ paths:
               $ref: '#/components/schemas/RegisterRequest'
         required: true
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-content-type: application/json
+      x-accepts:
+      - '*/*'
   /admin/cards/create:
     post:
-      tags:
-        - admin-controller
       operationId: createCard
       requestBody:
         content:
@@ -135,182 +149,226 @@ paths:
               $ref: '#/components/schemas/CardCreationRequest'
         required: true
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-content-type: application/json
+      x-accepts:
+      - '*/*'
   /admin/cards/update:
     patch:
-      tags:
-        - admin-controller
       operationId: updateCard
       parameters:
-        - name: last_four_card_digits
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: activate
-          in: query
-          required: true
-          schema:
-            type: string
+      - explode: true
+        in: query
+        name: last_four_card_digits
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: activate
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-accepts:
+      - '*/*'
   /admin/cards/block/resolve:
     patch:
-      tags:
-        - admin-controller
       operationId: resolveCard
       parameters:
-        - name: request_id
-          in: query
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - explode: true
+        in: query
+        name: request_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-accepts:
+      - '*/*'
   /user/cards/get:
     get:
-      tags:
-        - User Controller
-      summary: Get user cards
       description: Returns list of user's cards
       operationId: getCards
       parameters:
-        - name: pageable
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/Pageable'
-        - name: search_query
-          in: query
-          required: false
-          schema:
-            type: string
+      - explode: true
+        in: query
+        name: pageable
+        required: true
+        schema:
+          $ref: '#/components/schemas/Pageable'
+        style: form
+      - explode: true
+        in: query
+        name: search_query
+        required: false
+        schema:
+          type: string
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
       security:
-        - bearerAuth: []
+      - bearerAuth: []
+      summary: Get user cards
+      tags:
+      - User Controller
+      x-accepts:
+      - '*/*'
   /user/cards/balance:
     get:
-      tags:
-        - User Controller
       operationId: getBalance
       parameters:
-        - name: request
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/BalanceRequest'
+      - explode: true
+        in: query
+        name: request
+        required: true
+        schema:
+          $ref: '#/components/schemas/BalanceRequest'
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - User Controller
+      x-accepts:
+      - '*/*'
   /admin/users/:
     get:
-      tags:
-        - admin-controller
       operationId: getAllUsers
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-accepts:
+      - '*/*'
   /admin/cards/block/requests:
     get:
-      tags:
-        - admin-controller
       operationId: getAllCardsBlockRequests
       parameters:
-        - name: pageable
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/Pageable'
+      - explode: true
+        in: query
+        name: pageable
+        required: true
+        schema:
+          $ref: '#/components/schemas/Pageable'
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-accepts:
+      - '*/*'
   /admin/cards/:
     get:
-      tags:
-        - admin-controller
       operationId: getAllCards
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-accepts:
+      - '*/*'
   /admin/users/delete:
     delete:
-      tags:
-        - admin-controller
       operationId: deleteUser
       parameters:
-        - name: id
-          in: query
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-accepts:
+      - '*/*'
   /admin/cards/delete:
     delete:
-      tags:
-        - admin-controller
       operationId: deleteCard
       parameters:
-        - name: last_four_card_digits
-          in: query
-          required: true
-          schema:
-            type: string
+      - explode: true
+        in: query
+        name: last_four_card_digits
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
-        '200':
-          description: OK
+        "200":
           content:
             '*/*':
               schema:
                 type: object
+          description: OK
+      tags:
+      - admin-controller
+      x-accepts:
+      - '*/*'
 components:
   schemas:
     TransferRequest:
-      type: object
+      example:
+        amount: 0.8008281904610115
+        source: source
+        target: target
       properties:
         source:
           type: string
@@ -318,21 +376,25 @@ components:
           type: string
         amount:
           type: number
-    LoginResponse:
       type: object
+    LoginResponse:
+      example:
+        refresh_token: refresh_token
+        expires_in: 0
+        token: token
       properties:
         token:
           type: string
         refresh_token:
           type: string
         expires_in:
-          type: integer
           format: int64
-    LoginRequest:
-      required:
-        - password
-        - username
+          type: integer
       type: object
+    LoginRequest:
+      example:
+        password: password
+        username: username
       properties:
         username:
           maxLength: 100
@@ -342,12 +404,15 @@ components:
           maxLength: 100
           minLength: 3
           type: string
-    RegisterRequest:
       required:
-        - password
-        - role
-        - username
+      - password
+      - username
       type: object
+    RegisterRequest:
+      example:
+        password: password
+        role: ADMIN
+        username: username
       properties:
         username:
           maxLength: 100
@@ -358,62 +423,74 @@ components:
           minLength: 3
           type: string
         role:
-          type: string
           enum:
-            - ADMIN
-            - USER
-    CardCreationRequest:
+          - ADMIN
+          - USER
+          type: string
       required:
-        - card_number
-        - expires_in
-        - owner_id
-        - status
+      - password
+      - role
+      - username
       type: object
+    CardCreationRequest:
+      example:
+        card_number: card_number
+        owner_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        expires_in: 2000-01-23
+        start_balance: 0.8008281904610115
+        status: EXPIRED
       properties:
         card_number:
           maxLength: 16
           minLength: 16
           type: string
         owner_id:
-          type: string
           format: uuid
+          type: string
         expires_in:
-          type: string
           format: date
-        status:
           type: string
+        status:
           enum:
-            - EXPIRED
-            - ACTIVE
-            - BLOCKED
+          - EXPIRED
+          - ACTIVE
+          - BLOCKED
+          type: string
         start_balance:
           type: number
-    Pageable:
+      required:
+      - card_number
+      - expires_in
+      - owner_id
+      - status
       type: object
+    Pageable:
       properties:
         page:
+          format: int32
           minimum: 0
           type: integer
-          format: int32
         size:
+          format: int32
           minimum: 1
           type: integer
-          format: int32
         sort:
-          type: array
           items:
             type: string
-    BalanceRequest:
-      required:
-        - last_four_card_digits
+          type: array
       type: object
+    BalanceRequest:
       properties:
         last_four_card_digits:
-          type: array
           items:
             type: string
+          type: array
+      required:
+      - last_four_card_digits
+      type: object
   securitySchemes:
     bearerAuth:
-      type: http
-      scheme: bearer
       bearerFormat: JWT
+      scheme: bearer
+      type: http
+

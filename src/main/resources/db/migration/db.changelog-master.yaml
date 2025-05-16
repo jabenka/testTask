@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: initial_schema.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: demo_data.yaml
+      relativeToChangelogFile: true
