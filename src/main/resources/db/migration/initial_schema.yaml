@@ -1,0 +1,148 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: zxcjabka
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: cards
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: card_number
+                  type: VARCHAR(100)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: owner_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_card_owner
+                    references: users(id)
+              - column:
+                  name: expiry_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: card_last_four_digits
+                  type: VARCHAR(4)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: balance
+                  type: DECIMAL(19, 2)
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: card_block_requests
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: card_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: admin_id
+                  type: UUID
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: card_block_requests
+            baseColumnNames: card_id
+            constraintName: fk_card_block_requests_card
+            referencedTableName: cards
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: card_block_requests
+            baseColumnNames: user_id
+            constraintName: fk_card_block_requests_user
+            referencedTableName: users
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: card_block_requests
+            baseColumnNames: admin_id
+            constraintName: fk_card_block_requests_admin
+            referencedTableName: users
+            referencedColumnNames: id
+        - createIndex:
+            indexName: idx_card_block_requests_card_id
+            tableName: card_block_requests
+            columns:
+              - column:
+                  name: card_id
+        - createIndex:
+            indexName: idx_card_block_requests_user_id
+            tableName: card_block_requests
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_card_block_requests_admin_id
+            tableName: card_block_requests
+            columns:
+              - column:
+                  name: admin_id
